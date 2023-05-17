@@ -1,0 +1,72 @@
+// Quasar SCSS (& Sass) Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+
+// Check documentation for full list of Quasar variables
+
+// Your own variables (that are declared here) and Quasar's own
+// ones will be available out of the box in your .vue/.scss/.sass files
+
+// It's highly recommended to change the default colors
+// to match your app's branding.
+// Tip: Use the "Theme Builder" on Quasar's documentation website.
+
+@use 'sass:string';
+@import 'quasar/src/css/variables.sass';
+
+$primary: #0791a3;
+$secondary: #5595c9;
+$accent: #ab36bf;
+
+$dark: #1d1d1d;
+$dark-page: #121212;
+
+$positive: #52b369;
+$negative: #ed5567;
+$info: #5cc6db;
+$warning: #f5d069;
+
+$generic-border-radius: 8px;
+
+@function rgba-opacity($rgb, $alp: 1) {
+  @return 'rgba(var(' + $rgb + '), ' + $alp + ')';
+}
+
+$separator-color: rgba(0, 0, 0, 0.05);
+$separator-dark-color: rgba(255, 255, 255, 0.2);
+$card-separator-color: #f8f8f8;
+
+$card-shadow: $shadow-8;
+$shadow-color: black;
+$elevation-umbra: rgba($shadow-color, 0.06);
+$elevation-penumbra: rgba($shadow-color, 0.04);
+$elevation-ambient: rgba($shadow-color, 0.02);
+
+$primary-rgb: red($primary), green($primary), blue($primary);
+$secondary-rgb: red($secondary), green($secondary), blue($secondary);
+$positive-rgb: red($positive), green($positive), blue($positive);
+$negative-rgb: red($negative), green($negative), blue($negative);
+$info-rgb: red($info), green($info), blue($info);
+$warning-rgb: red($warning), green($warning), blue($warning);
+
+$fg: #282828;
+$fg0: #222;
+$fg1: #181818;
+$fg2: #111;
+$bg: #fff;
+$bg0: #f8f8f8;
+$bg1: #e8e8e8;
+$bg2: #ddd;
+$fg-rgb: red($fg), green($fg), blue($fg);
+$fg0-rgb: red($fg0), green($fg0), blue($fg0);
+$fg1-rgb: red($fg1), green($fg1), blue($fg1);
+$fg2-rgb: red($fg2), green($fg2), blue($fg2);
+$bg-rgb: red($bg), green($bg), blue($bg);
+$bg0-rgb: red($bg0), green($bg0), blue($bg0);
+$bg1-rgb: red($bg1), green($bg1), blue($bg1);
+$bg2-rgb: red($bg2), green($bg2), blue($bg2);
+
+$header-height: 50px;
+$header-bar-height: 20px;
+$footer-height: 30px;
