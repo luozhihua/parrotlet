@@ -1,9 +1,6 @@
 // Depends on tencentcloud-sdk-nodejs version 4.0.3 or higher
 import { type TencentOptions as Config } from './constants';
-import {
-  TextTranslateRequest,
-  type TextTranslateBatchRequest,
-} from 'tencentcloud-sdk-nodejs-tmt/tencentcloud/services/tmt/v20180321/tmt_models';
+import { TextTranslateRequest } from 'tencentcloud-sdk-nodejs-tmt/tencentcloud/services/tmt/v20180321/tmt_models';
 import { Client } from 'tencentcloud-sdk-nodejs-tmt/tencentcloud/services/tmt/v20180321/tmt_client';
 import TranslateBase from './base';
 

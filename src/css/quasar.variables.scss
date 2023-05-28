@@ -12,6 +12,7 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
+@use 'sass:color';
 @use 'sass:string';
 @import 'quasar/src/css/variables.sass';
 
@@ -67,6 +68,22 @@ $bg0-rgb: red($bg0), green($bg0), blue($bg0);
 $bg1-rgb: red($bg1), green($bg1), blue($bg1);
 $bg2-rgb: red($bg2), green($bg2), blue($bg2);
 
+// Light color
+$primary-l: color.mix($primary, $bg1, $weight: 10%);
+$secondary-l: color.mix($secondary, $bg1, $weight: 10%);
+$accent-l: color.mix($accent, $bg1, $weight: 10%);
+$positive-l: color.mix($positive, $bg1, $weight: 10%);
+$negative-l: color.mix($negative, $bg1, $weight: 10%);
+$info-l: color.mix($info, $bg1, $weight: 10%);
+$warning-l: color.mix($warning, $bg1, $weight: 10%);
+
+$primary-l-rgb: red($primary-l), green($primary-l), blue($primary-l);
+$secondary-l-rgb: red($secondary-l), green($secondary-l), blue($secondary-l);
+$positive-l-rgb: red($positive-l), green($positive-l), blue($positive-l);
+$negative-l-rgb: red($negative-l), green($negative-l), blue($negative-l);
+$info-l-rgb: red($info-l), green($info-l), blue($info-l);
+$warning-l-rgb: red($warning-l), green($warning-l), blue($warning-l);
+
 $header-height: 50px;
 $header-bar-height: 20px;
-$footer-height: 30px;
+$footer-height: 31px;

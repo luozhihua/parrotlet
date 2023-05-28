@@ -1,16 +1,21 @@
 <template>
   <div class="q-table-keyword">
-    <q-input ref="$input" v-model.trim="keyword" @update:model-value="(v: any)=>emit('update:modelValue', v)"
+    <q-input ref="$input" v-model.trim="keyword" @update:model-value="(v: any)=>emit('update:model-value', v)"
       :debounce="400" clearable outlined rounded dense>
       <template v-slot:prepend>
-        <q-icon name="svguse:#pl-search" dense round flat size=".8em" @mouseup="$input?.focus()" />
+        <q-btn dense round flat size="md" @mouseup="$input?.focus()">
+          <q-icon name="svguse:#pl-search" :color="keyword ? 'primary' : ''" />
+          <q-badge v-if="keyword" floating color="red"></q-badge>
+        </q-btn>
       </template>
       <template v-slot:append>
-        <q-icon name="svguse:#pl-case" dense round flat size=".8em" :class="{
-          'text-primary': cases
-        }" @mousedown="()=> cases = !cases" @mouseup="$input?.focus()" @click="emit('update:caseSensitive', cases)" />
+        <q-btn flat dense round size="sm" @mousedown="()=> cases = !cases" @mouseup="$input?.focus()"
+          @click="emit('update:case-sensitive', cases)">
+          <q-icon name="svguse:#pl-case" :class="{ 'text-primary': cases }" />
+        </q-btn>
       </template>
     </q-input>
+    <q-tooltip>{{ $t('Search contents') }}</q-tooltip>
   </div>
 </template>
 
@@ -18,7 +23,7 @@
 import { QInput } from 'quasar';
 import { ref, watch } from 'vue';
 
-const emit = defineEmits(['update:modelValue', 'update:caseSensitive'])
+const emit = defineEmits(['update:model-value', 'update:case-sensitive'])
 const props = defineProps({
   modelValue: {type: String, required: true},
   caseSensitive: {type: Boolean, required: false, default: false},
@@ -27,6 +32,10 @@ const props = defineProps({
 const $input = ref<QInput|null>(null)
 const keyword = ref(props.modelValue)
 const cases = ref(props.caseSensitive)
+
+watch(()=>props.modelValue, (v)=>{
+  keyword.value = v
+})
 
 watch(()=>props.caseSensitive, (v)=>{
   cases.value = v
@@ -50,8 +59,8 @@ watch(()=>props.caseSensitive, (v)=>{
       .q-field__control,
       .q-field__marginal {
         height: $hei;
-        padding-right: 4px;
-        padding-left: 4px;
+        padding-right: 0px;
+        padding-left: 0px;
       }
 
       .q-field__native {
@@ -94,6 +103,10 @@ watch(()=>props.caseSensitive, (v)=>{
         display: flex !important;
       }
 
+      .q-badge {
+        display: none !important;
+      }
+
     }
 
     .q-field__append {
@@ -102,6 +115,16 @@ watch(()=>props.caseSensitive, (v)=>{
 
     .q-icon {
       color: var(--p-fg);
+    }
+
+    .q-badge {
+      padding: 3px;
+      min-height: 6px;
+
+      &--floating {
+        right: 0;
+        top: 0;
+      }
     }
   }
 }

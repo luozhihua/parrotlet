@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import languages from 'src/i18n/langs/languages.json';
+import languages from 'src/i18n/languages.json';
 import { computed, onMounted } from 'vue';
 import { useSettingStore } from '../../stores/useSettingStore';
 import { importQuasarLang } from '../../util/quasar-langs';

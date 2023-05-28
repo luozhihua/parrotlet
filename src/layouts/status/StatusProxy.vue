@@ -1,5 +1,6 @@
 <template>
-  <q-btn icon="svguse:#pl-network" flat dense size="xs" :color="settings.$state.proxy?.enable ? 'primary' : 'grey-5'">
+  <q-btn icon="svguse:#pl-network" no-caps flat dense size="sm" :label="$t('Proxy')"
+    :color="settings.$state.proxy?.enable ? 'primary' : 'grey-5'">
     <q-popup-proxy>
       <div style="width: 500px">
         <NetworkSettings />

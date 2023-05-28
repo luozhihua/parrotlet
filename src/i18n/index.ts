@@ -23,13 +23,15 @@ import tr from './langs/tr.json';
 import uk from './langs/uk.json';
 import vi from './langs/vi.json';
 import en from './langs/en.json';
+import enUS from './langs/en-US.json';
 import zhCN from './langs/zh-CN.json';
 import zhTW from './langs/zh-TW.json';
 
 export default {
   'zh-CN': zhCN,
   'zh-TW': zhTW,
-  'en': en,
+  'en-US': enUS,
+  en: en,
   af,
   ar,
   cs,
@@ -53,5 +55,5 @@ export default {
   th,
   tr,
   uk,
-  vi
-}
+  vi,
+};

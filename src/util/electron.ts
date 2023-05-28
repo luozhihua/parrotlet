@@ -65,12 +65,12 @@ export interface Electron {
   showItemInFolder: (fullPath: string) => Promise<void>;
   proxyChanged: () => Promise<void>;
   copy: (text: string) => void;
-  translateByEngine: (
+  translateByEngine: <T = string | string[]>(
     engine: PROVIDERS,
-    text: string | string[],
+    text: T,
     target: string,
     source?: string
-  ) => Promise<string>;
+  ) => Promise<T>;
 
   translate: <T = string | string[]>(
     text: T,

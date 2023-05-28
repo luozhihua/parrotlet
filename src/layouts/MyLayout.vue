@@ -34,15 +34,19 @@
         <span class="app-name" style="font-size: 10px;">parrot<span class="app-name-2">let</span></span>
       </q-chip>
       <q-toolbar class="non-selectable q-pt-none q-px-md no-drag">
-        <portal-target name="toolbar-left" class="toolbar-left flex text-left justify-start">
-          <q-btn @click="router.back()" icon="chevron_left" round dense flat></q-btn>
-        </portal-target>
+        <div class="toolbar-left flex text-left justify-start">
+          <portal-target name="toolbar-left">
+            <!-- <q-btn @click="router.back()" icon="chevron_left" round dense flat></q-btn> -->
+          </portal-target>
+        </div>
         <q-space />
-        <portal-target name="toolbar-center" class="toolbar-center flex text-center self-center align-center"
-          style="flex: 1;">
-        </portal-target>
+        <div class="toolbar-center flex text-center self-center align-center">
+          <portal-target name="toolbar-center" />
+        </div>
         <q-space />
-        <portal-target name="toolbar-right" class="toolbar-right flex text-right self-right"></portal-target>
+        <div class="toolbar-right flex text-right self-right">
+          <portal-target name="toolbar-right" />
+        </div>
         <q-separator vertical spaced inset></q-separator>
         <StatusDark class="q-mr-sm" />
         <q-btn-group rounded unelevated dense>
@@ -65,13 +69,16 @@
 
     <q-footer dense class="text-right">
       <q-toolbar dense class="row flex">
-        <div>
+        <div class="text-caption">
           &copy; Parrot Translator. Create by Colin Luo.
         </div>
         <q-space></q-space>
         <div class="text-right">
-          <StatusProxy />
-          <StatusEngine />
+          <div class="flex">
+            <StatusProxy />
+            <q-separator vertical spaced></q-separator>
+            <StatusEngine />
+          </div>
         </div>
       </q-toolbar>
     </q-footer>

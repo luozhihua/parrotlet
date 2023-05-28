@@ -1,10 +1,32 @@
 import { Ref, ref } from 'vue';
 import ColumnToggle from './ColumnToggle.vue';
 
-export default function (columns: Ref<any>) {
-  const visibleColumns = ref<string[]>(
-    columns.value.map((col: any) => col._key)
-  );
+const visibleColumns = ref<string[]>([]);
+export default function (columns?: Ref<any>) {
+  if (columns?.value?.length) {
+    visibleColumns.value = columns.value.map((col: any) => col._key);
+  }
 
-  return { visibleColumns, ColumnToggle };
+  function hideColumn(col: string) {
+    const index = visibleColumns.value.indexOf(col);
+    visibleColumns.value.splice(index, 1);
+  }
+
+  function showColumn(col: string) {
+    const index = visibleColumns.value.indexOf(col);
+    if (index === -1) {
+      visibleColumns.value.push(col);
+    }
+  }
+
+  function toggleColumn(col: string) {
+    const index = visibleColumns.value.indexOf(col);
+    if (index === -1) {
+      visibleColumns.value.push(col);
+    } else {
+      visibleColumns.value.splice(index, 1);
+    }
+  }
+
+  return { ColumnToggle, visibleColumns, hideColumn, showColumn, toggleColumn };
 }

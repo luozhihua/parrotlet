@@ -49,7 +49,7 @@
 
           <q-select :label="$t('Proxy white list')" v-model="tmpProxy.bypass" use-input use-chips multiple map-options
             emit-value counter hide-dropdown-icon input-debounce="0" new-value-mode="add-unique"
-            :hint="$t('Support {format}.', {format:'Glob: *.foo.com, *bar.com, baz.com'})">
+            :hint="$t('Support {format}', {format:'Glob: *.foo.com, *bar.com, baz.com'})">
 
             <template v-slot:append>
               <q-icon name="pl-robot" class="cursor-pointer">
@@ -90,7 +90,7 @@
 
             <template v-slot:selected-item="scope">
               <q-chip dense @remove="scope.removeAtIndex(scope.index)" :tabindex="scope.tabindex" size="md"
-                class="q-ma-none q-mr-xs" v-bind="!Object.values(PROVIDER_CONFIG).some(a=>a.proxyBypass===scope.opt) ? {
+                class="q-ma-none q-mr-xs q-my-xs" v-bind="!Object.values(PROVIDER_CONFIG).some(a=>a.proxyBypass===scope.opt) ? {
                 removable: true, color: 'positive'
               } : {}">
                 <q-icon v-if="Object.values(PROVIDER_CONFIG).some(a=>a.proxyBypass===scope.opt)"
@@ -177,9 +177,13 @@ onBeforeUnmount( ()=> {
 </script>
 
 <style lang="stylus">
-.component-settings
+.proxy-settings
   margin auto
 
+  .q-chip {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
   .section-separator
     display block
     height 0px;

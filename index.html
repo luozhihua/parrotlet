@@ -18,8 +18,29 @@
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
   <link rel="icon" type="image/ico" href="icons/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_1592281_12io1829tqh.css">
-  <script src="//at.alicdn.com/t/c/font_1592281_ywrgw03iazi.js"></script>
+  <link crossorigin rel="stylesheet" type="text/css" href="https://at.alicdn.com/t/c/font_1592281_12io1829tqh.css">
+
+  <script>
+
+    window.onerror = function (e) {
+      document.querySelector('#error').innerHTML += ('<hr/><pre>' + e + '</pre>')
+    }
+  </script>
+  <script crossorigin src="https://at.alicdn.com/t/c/font_1592281_hzhzn1uk6v.js"></script>
+  <!-- <script>
+    const _warn = console.warn
+    let abc = 0
+    console.warn = function (...args) {
+      if (args[0].startsWith('[intlify]')) {
+        abc += 1
+        // debugger
+        const a = args[0].match(/\[intlify\][\w\s]+'([^']+)' key in '([^']+)'/)
+        console.log(abc, args[0], 'xxxxxxxxxxxxxxxxxxxxxxx', a)
+      } else {
+        // _warn.apply(console, args)
+      }
+    }
+  </script> -->
   <style type="text/css">
     .icon,
     .pl-icon {
@@ -33,6 +54,7 @@
 </head>
 
 <body>
+  <div id="error"></div>
   <!-- quasar:entry-point -->
 </body>
 

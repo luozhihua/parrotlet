@@ -25,6 +25,8 @@ const QUASAR_LANG_ISO: { [k: string]: string } = {
 export async function importQuasarLang(lang: string | { value: string }) {
   lang = typeof lang === 'string' ? lang : lang.value;
   const langAlias = QUASAR_LANG_ISO[lang] || lang;
-  const langPack = await import(`../../node_modules/quasar/lang/${langAlias}`);
+  const langPack = await import(
+    `../../node_modules/quasar/lang/${langAlias}.js`
+  );
   return langPack.default;
 }

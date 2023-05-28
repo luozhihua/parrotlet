@@ -1,7 +1,7 @@
 <template>
   <q-list no-border link inset-delimiter separator class="project-list-component">
     <q-item clickable v-for="proj in projects" :key="proj.name"
-      @click="$router.push({ name: 'project-details', params: {id: proj.id} })">
+      @click="$router.push({name:'project-translator', params: {id: proj.id}})">
       <q-item-section avatar>
         <q-avatar rounded color="white" text-color="grey-5">
           <img v-if="proj.logo" :src="proj.logo" alt="">
@@ -20,8 +20,13 @@
       </q-item-section>
       <q-item-section side>
         <div>
-          <q-btn flat round size="12px" icon="edit" color="primary" @click.stop="gotoEditor(proj)">
+          <q-btn flat round size="12px" icon="info" color="primary" @click.stop="gotoEditor(proj)">
             <q-tooltip>{{ $t('modify-project-info') }}</q-tooltip>
+          </q-btn>
+
+          <q-btn flat round size="12px" icon="edit" color="primary"
+            @click.stop="$router.push({ name: 'project-details', params: {id: proj.id} })">
+            <q-tooltip>{{ $t('Languages') }}</q-tooltip>
           </q-btn>
 
           <q-btn flat round size="12px" icon="delete" color="negative" @click.stop>

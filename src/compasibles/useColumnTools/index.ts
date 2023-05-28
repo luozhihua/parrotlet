@@ -1,4 +1,7 @@
+import { ref } from 'vue';
 import ColumnTools from './ColumnTools.vue';
+
 export default function () {
-  return { ColumnTools };
+  const visible = ref(false);
+  return { visible, ColumnTools };
 }

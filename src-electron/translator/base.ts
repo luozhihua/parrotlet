@@ -1,4 +1,4 @@
-import pLimit from 'p-limit';
+import pLimit from '../../src-common/plimit';
 export interface EncodedText {
   text: string;
   variables: string[] | null;

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import languages from 'src/i18n/langs/languages.json';
+import languages from 'src/i18n/languages.json';
 import pick from 'lodash-es/pick';
 
 export type DarkMode = 'dark' | 'light' | 'auto';
@@ -28,6 +28,10 @@ export const useSettingStore = defineStore(ID, {
       darkMode: 'auto' as DarkMode,
       language: 'en',
       languages,
+      color: '',
+      table: {
+        dense: true,
+      },
       proxy: {
         enable: false,
         bypass: [],

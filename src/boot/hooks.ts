@@ -3,6 +3,8 @@ import { StateTree, SubscriptionCallbackMutation } from 'pinia';
 import { boot } from 'quasar/wrappers';
 import { ID as settingId, useSettingStore } from '../stores/useSettingStore';
 import { electron } from '../util/electron';
+import { Dark, Quasar } from 'quasar';
+import { importQuasarLang } from 'src/util/quasar-langs';
 
 async function settingHook(
   mutation: SubscriptionCallbackMutation<StateTree>,
@@ -12,22 +14,24 @@ async function settingHook(
   const { app } = features;
   const { darkMode, proxy } = state;
   const language = state.language?.value || state.language;
-  const i18n = app.config.globalProperties.$i18n;
 
   // Update quasar languages
   const mode = darkMode === 'auto' ? darkMode : darkMode === 'dark';
-  const [{ Dark, Quasar }, { importQuasarLang }] = await Promise.all([
-    import('quasar'),
-    import('src/util/quasar-langs'),
-  ]);
+  // const [{ Dark, Quasar }, { importQuasarLang }] = await Promise.all([
+  //   import('quasar'),
+  //   import('src/util/quasar-langs'),
+  // ]);
   Dark.set(mode);
   importQuasarLang(language).then((langPack) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Quasar as any)?.lang?.set(langPack, {});
-  });
 
-  // Update i18n current language
-  i18n.locale = language;
+    // Update i18n current language
+    const i18n = app.config.globalProperties.$i18n;
+    if (i18n) {
+      i18n.locale = language;
+    }
+  });
 
   // Set locale with Axios headers
   if (app.config.globalProperties.$axios?.defaults?.headers?.common) {

@@ -18,18 +18,19 @@ export interface State {
 
 export interface Getters<StateT = State> {
   [k: string]: any;
-  project: (state: StateT) => Project | undefined;
+  project: (state: StateT) => Project;
 }
 
 export const ID = 'project';
 export const useProjectStore = defineStore<typeof ID, State, Getters>(ID, {
   state: () => ({
     projects: [] as Project[],
-    activeId: 'voInYdew',
+    activeId: '',
   }),
 
   getters: {
-    project: (state) => state.projects.find((p) => p.id === state.activeId),
+    project: (state) =>
+      state.projects.find((p) => p.id === state.activeId) as Project,
   },
 
   actions: {

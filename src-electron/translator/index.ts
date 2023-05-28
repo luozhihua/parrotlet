@@ -8,7 +8,7 @@ import { default as TencentEngine } from './tencent';
 import { default as HuaweiEngine } from './huawei';
 import { default as YoudaoEngine } from './youdao';
 import chalk from 'chalk';
-import emoji from 'node-emoji';
+import { get as getEmoji, emojify } from 'node-emoji';
 
 export type Engines = {
   [K in PROVIDERS]?: K extends PROVIDERS.google
@@ -32,8 +32,8 @@ export type Engines = {
 
 function getEmojiFlag(lang: string) {
   const key = lang !== 'auto' ? lang.split(/[-_]/gi).pop() : '';
-  return emoji.emojify(
-    emoji.get(`flag-${key?.toLowerCase()}`) || 'triangular_flag_on_post'
+  return emojify(
+    getEmoji(`flag-${key?.toLowerCase()}`) || 'triangular_flag_on_post'
   );
 }
 
@@ -112,7 +112,7 @@ export class Translator {
 
   async translateByEngine(
     engineName: PROVIDERS,
-    text: string,
+    text: string | string[],
     target: string,
     source = 'auto'
   ) {
@@ -135,7 +135,7 @@ export class Translator {
     return transilation;
   }
 
-  async translate(text: string, target: string, source = 'auto') {
+  async translate(text: string | string[], target: string, source = 'auto') {
     const engine = this.#getEngineByPolicy();
     const transilation = (await engine?.translate(text, target, source)) || '';
     console.log(

@@ -10,8 +10,6 @@
         <li v-for="r in results" :key="r.lang" :style="{ color: r.lang === store.language ? 'red' : '' }">{{ r.text }}
         </li>
       </ul>
-
-      <pre>{{ locale }}</pre>
     </div>
   </q-page>
 </template>
@@ -22,10 +20,10 @@ import {useTranslateStore} from 'src/stores/useTranslateStore';
 import {ref, watch, onMounted} from 'vue'
 // import { electron } from '../util/electron';
 // import { PROVIDERS } from '../../src-electron/translator/constants';
-import { useLocaleStore } from '../stores/useLocaleStore';
+// import { useLocaleStore } from '../stores/useLocaleStore';
 
 const store = useSettingStore()
-const locale = useLocaleStore()
+// const locale = useLocaleStore()
 const transStore = useTranslateStore()
 const text = ref('没有苹果|一个苹果|{count}个苹果')
 const results = ref<any[]>([])
@@ -44,7 +42,6 @@ async function handleTranslate () {
   // });
 }
 
-locale.initProjectLocale('voInYdew')
 onMounted(()=>{
   watch(
     ()=>transStore.$state,

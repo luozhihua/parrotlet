@@ -11,6 +11,25 @@
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 const VueI18n = require('@intlify/unplugin-vue-i18n');
+const esmodule = require('vite-plugin-esmodule');
+const I18nText = require('./src-common/vite-i18n-text/index.js');
+const { set } = require('lodash');
+
+const internal = [
+  'p-limit',
+  '@sindresorhus/is',
+  'node-emoji',
+  'p-locate',
+  // 'p-locate',
+  // 'p-reducs',
+  // 'p-try',
+  // 'p-waterfall',
+  // 'lodash-es',
+  // 'conf',
+  // 'pkg-up',
+  // 'locate-path',
+  // 'read-pkg-up',
+];
 
 module.exports = configure(function (ctx) {
   return {
@@ -51,7 +70,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
       target: {
-        browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
+        browser: ['es2019'],
         node: 'node16',
       },
 
@@ -72,7 +91,19 @@ module.exports = configure(function (ctx) {
       // distDir
       sourceMap: true,
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf) {
+        // set(viteConf, 'build.rollupOptions.output.format', 'cjs');
+        // set(viteConf, 'build.rollupOptions.external', [
+        //   ...(viteConf.build?.rollupOptions?.external || []),
+        //   'electron',
+        //   'fs',
+        //   'path',
+        // ]);
+        // viteConf.build.rollupOptions.output.format = 'cjs';
+        // viteConf.build.rollupOptions.external.push(
+        //   ...['electron', 'fs', 'path']
+        // );
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
@@ -90,6 +121,11 @@ module.exports = configure(function (ctx) {
             include: path.resolve(__dirname, './src/i18n/**'),
           },
         ],
+        {
+          ...esmodule(internal),
+          apply: 'build',
+        },
+        I18nText({ dir: path.resolve(__dirname, './src/i18n/langs/') }),
       ],
     },
 
@@ -117,22 +153,50 @@ module.exports = configure(function (ctx) {
       },
 
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      lang: 'zh-CN', // Quasar language pack
+      cssAddon: true,
+      autoImportComponentCase: 'combined',
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //
-      // components: [],
+      components: [
+        'QPage',
+        'QPageContainer',
+        'QPagination',
+        'QCard',
+        'QCardActions',
+        'QCardSection',
+        'QSeparator',
+        'QCircularProgress',
+        'QLinearProgress',
+        'QChip',
+        'QIcon',
+        'QCheckbox',
+        'QSelect',
+        'QInput',
+        'QBtn',
+        'QBadge',
+        'QAvatar',
+        'QBtnToggle',
+        'QBtnDropdown',
+        'QField',
+        'QDialog',
+        'QList',
+        'QItem',
+        'QItemLabel',
+        'QItemSection',
+      ],
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Dialog', 'Notify'],
+      plugins: ['Dialog', 'Notify', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations
     // https://v2.quasar.dev/options/animations
-    animations: [],
+    animations: 'all',
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
     // sourceFiles: {
@@ -195,18 +259,45 @@ module.exports = configure(function (ctx) {
     electron: {
       // extendElectronMainConf (esbuildConf)
       // extendElectronPreloadConf (esbuildConf)
+      extendElectronPreloadConf: (config) => {
+        // config.format = 'esm';
+        // config.target = ['node16'];
+        config.treeShaking = true;
+        // config.splitting = true;
+        config.external = config.external.filter(
+          (ext) => !internal.some((e) => e === ext)
+        );
+        return config;
+      },
+      extendElectronMainConf: (config) => {
+        // config.format = 'esm';
+        // config.target = ['node16'];
+        config.treeShaking = true;
+        // config.splitting = true;
+        config.external = config.external.filter(
+          (ext) => !internal.some((e) => e === ext)
+        );
+        return config;
+      },
+
+      extendPackageJson(pkg) {
+        // pkg.type = 'module';
+        internal.forEach((i) => {
+          if (pkg.dependencies[i]) delete pkg.dependencies[i];
+        });
+      },
 
       inspectPort: 5858,
 
-      bundler: 'packager', // 'packager' or 'builder'
+      bundler: 'builder', // 'packager' or 'builder'
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
         // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
+        appBundleId: 'com.parrotlet.app',
+        appCategoryType: 'Tool',
         // osxSign: '',
-        // protocol: 'myapp://path',
+        protocol: 'parrotlet://projects',
         // Windows only
         // win32metadata: { ... }
       },
@@ -214,7 +305,12 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'parrotlet2',
+        appId: 'com.parrotlet.app',
+        icon: '/Users/colin/Works/Projects/parrotlet2/public/icons',
+        mac: {
+          category: 'public.app-category.developer-tools',
+          icon: '../public/icons/icon.icns',
+        },
       },
     },
 

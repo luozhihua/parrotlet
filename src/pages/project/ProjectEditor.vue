@@ -7,12 +7,11 @@
         <template v-slot:separator>
           <q-icon size="1em" name="svguse:#pl-arrow-right" style="color: rgba(123,123,123,0.7)" />
         </template>
-        <q-breadcrumbs-el icon="svguse:#pl-back" :to="{ name: 'project-details' }" />
-        <q-breadcrumbs-el :label="$t('home')" icon="home" :to="{ name: 'home' }" />
+        <q-breadcrumbs-el icon="svguse:#pl-back" :to="{ name: 'projects' }" />
         <q-breadcrumbs-el :label="$t('projects')" icon="all_inbox" :to="{ name: 'projects' }" />
-        <q-breadcrumbs-el :label="form.name" :icon="`img:${form.logo}`"
-          :to="{ name: 'project-details', params:{id: route.params.id} }" v-if="route.params.id" />
-        <q-breadcrumbs-el :label="$t(route.params.id ? 'edit' : 'create')" />
+        <q-breadcrumbs-el v-if="route.params.id" :label="form.name" :icon="`img:${form.logo}`"
+          :to="{ name: 'project-details', params:{id: route.params.id} }" />
+        <q-breadcrumbs-el v-else :label="$t('create')" />
       </q-breadcrumbs>
       <!-- </q-bar> -->
     </portal>
@@ -49,10 +48,10 @@
           :disable="finished || !isStep1Done" :error="step > 2 && !isStep2Done" :done="step >= 2 && isStep2Done">
 
           <LanguageSelector v-model="form.language" :languages="allLocaleCodes" :label="$t('primary-language')" square
-            emit-value map-options bottom-slots>
-            <template v-slot:prepend>
+            emit-value map-options bottom-slots icon="flag">
+            <!-- <template v-slot:prepend>
               <q-icon name="flag" size="1.4em" color="primary" />
-            </template>
+            </template> -->
             <template v-slot:hint>
               {{ $t('primary-language-field-tips') }}
             </template>
@@ -99,10 +98,10 @@
           <section>
             <LanguageSelector v-model="availableLanguages" multiple :languages="allLanguageFilteredOptions2" stack-label
               label-color="primary" :label="$t('Adding language')" square emit-value map-options status-component="toggle"
-              hide-dropdown-icon :chip="{color: 'primary', outline:true}">
-              <template v-slot:prepend>
+              hide-dropdown-icon :chip="{color: 'primary', outline:true}" icon="svguse:#pl-new">
+              <!-- <template v-slot:prepend>
                 <q-icon name="svguse:#pl-new" size="1em" color="primary" />
-              </template>
+              </template> -->
               <template v-slot:append>
                 <q-icon name="svguse:#pl-plus" size="0.8em" color="primary" class="bg-primary text-white"
                   style=" border-radius: 50%; padding: 6px" />
@@ -629,9 +628,6 @@ onMounted( ()=> {
     color rgba(123, 123, 123, 1)
   }
 
-  .q-field__messages.col {
-    padding-left: 45px;
-  }
 }
 
 .add-lang-dialog {

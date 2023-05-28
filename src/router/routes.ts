@@ -8,7 +8,8 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'home',
         path: '',
-        component: () => import('pages/IndexPage.vue'),
+        alias: 'projects',
+        component: () => import('pages/project/ProjectList.vue'),
       },
       {
         name: 'projects',
@@ -50,7 +51,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'demos/flags',
         path: '/demos/flags',
-        component: () => import('pages/demos/flags.vue'),
+        component: () => import('pages/demos/FlagList.vue'),
       },
     ],
   },

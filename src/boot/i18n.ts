@@ -3,6 +3,8 @@ import { I18n, createI18n } from 'vue-i18n';
 import messages from 'src/i18n';
 import { PiniaPlugin } from 'pinia';
 import { App } from 'vue';
+import { Dark, Quasar } from 'quasar';
+import { importQuasarLang } from 'src/util/quasar-langs';
 
 export type MessageLanguages = keyof typeof messages;
 // Type-define 'en-US' as the master schema for the resource
@@ -22,9 +24,11 @@ declare module 'vue-i18n' {
 }
 /* eslint-enable @typescript-eslint/no-empty-interface */
 
-const systemLang = process?.env?.LANG;
+const systemLang = typeof process !== undefined ? process.env.LANG : null;
 const clientLang = navigator?.language;
-const defaultLocale = (systemLang || clientLang || 'zh').split('.')[0];
+const defaultLocale = import.meta.env.DEV
+  ? 'en-US'
+  : (systemLang || clientLang || 'zh').split('.')[0];
 const fallbackLocale = (clientLang || 'en')?.split('.')[0];
 
 function languageSettingsSubscriber(
@@ -39,10 +43,10 @@ function languageSettingsSubscriber(
 
         // Update quasar languages
         const _mode = mode === 'auto' ? mode : mode === 'dark';
-        const [{ Dark, Quasar }, { importQuasarLang }] = await Promise.all([
-          import('quasar'),
-          await import('src/util/quasar-langs'),
-        ]);
+        // const [{ Dark, Quasar }, { importQuasarLang }] = await Promise.all([
+        //   import('quasar'),
+        //   await import('src/util/quasar-langs'),
+        // ]);
         Dark.set(_mode);
         importQuasarLang(language).then((langPack) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

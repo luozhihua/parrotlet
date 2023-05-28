@@ -45,9 +45,9 @@ export default class extends TranslateBase<Config> {
         new $Util.RuntimeOptions({})
       );
       return response.body.data?.translated || '';
-    } catch (error: any) {
+    } catch (error: unknown) {
       // 如有需要，请打印 error
-      Util.assertAsString(error.message);
+      Util.assertAsString((error as Error).message);
       return '';
     }
   }
