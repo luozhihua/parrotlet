@@ -57,6 +57,12 @@ export class Translator {
 
     const configs = this.options.engineConfigs;
     this.options.engines.forEach((engine) => {
+      const opt = configs[engine];
+
+      if (!opt || Object.keys(opt).length === 0) {
+        return;
+      }
+
       switch (engine) {
         case PROVIDERS.google:
           this.engines[engine] = new GoogleEngine(configs[engine]!);

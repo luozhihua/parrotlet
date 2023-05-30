@@ -306,5 +306,6 @@
     "Remove {name}": "刪除{name} ",
     "Remove language \"{lang}\" from project {name}": "從項目{lang}中刪除語言桎梏{name}≤ ",
     "And delete the language file also": "並刪除語言文件",
-    "Languages": "語言"
+    "Languages": "語言",
+    "All": "全部"
 }

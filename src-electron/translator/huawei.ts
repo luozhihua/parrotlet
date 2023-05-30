@@ -17,7 +17,7 @@ export default class extends TranslateBase<Config> {
 
   constructor(config: Config) {
     super(config);
-    const { region, projectId } = this.options;
+    const { region, projectId } = this.options || {};
     const path = 'machine-translation/text-translation';
     this.#api = `https://nlp-ext.${region}.myhuaweicloud.com/v1/${projectId}/${path}`;
   }

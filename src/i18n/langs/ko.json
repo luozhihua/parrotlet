@@ -306,5 +306,6 @@
     "Remove {name}": "{name} 제거 ",
     "Remove language \"{lang}\" from project {name}": "프로젝트 {lang}에서 언어 \"{name}\"를 제거하십시오. ",
     "And delete the language file also": "그리고 언어 파일도 삭제하십시오.",
-    "Languages": "언어들"
+    "Languages": "언어들",
+    "All": ""
 }

@@ -306,5 +306,6 @@
     "Remove {name}": "Xóa {name} ",
     "Remove language \"{lang}\" from project {name}": "Xóa ngôn ngữ \"{lang}\" khỏi dự án {name} ",
     "And delete the language file also": "Và xóa cả tệp ngôn ngữ",
-    "Languages": "Ngôn ngữ"
+    "Languages": "Ngôn ngữ",
+    "All": " Tất cả."
 }

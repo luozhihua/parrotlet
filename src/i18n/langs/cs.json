@@ -306,5 +306,6 @@
     "Remove {name}": "Odebrat _ #",
     "Remove language \"{lang}\" from project {name}": "Odstranit jazyk \"rex_#\" z projektu rex_#",
     "And delete the language file also": "A také odstranit jazykový soubor",
-    "Languages": "Jazyky"
+    "Languages": "Jazyky",
+    "All": "All"
 }

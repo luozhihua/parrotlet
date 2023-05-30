@@ -1,7 +1,7 @@
 <template>
   <DefineTemplate>
     <q-tooltip>{{ $t('Add text') }}</q-tooltip>
-    <q-dialog v-model="dialogVisible" persistent>
+    <q-dialog v-model="dialogVisible" persistent @before-show="onReset()">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">{{$t('Add text')}}</div>
@@ -75,7 +75,6 @@ async function save() {
     await $locale.addText(form.key, form.text, !!form.translate)
     emit('history')
     dialogVisible.value = false
-    onReset()
   }
 }
 

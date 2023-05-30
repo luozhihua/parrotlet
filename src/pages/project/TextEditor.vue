@@ -68,7 +68,7 @@
         :visible-columns="visibleColumns" virtual-scroll :virtual-scroll-sticky-size-start="28"
         :virtual-scroll-item-size="28" :loading="loading" :filter="mergedFilter" :filter-method="filterMethod"
         :selection="selection" v-model:selected="selected" :rowsPerPageOptions="rowsPerPageOptions" :class="{
-          [`selection-${selection}`]: true
+          [`selection-${selection}`]: true, 'no-shadow': true
         }">
 
         <!-- 表头 thead -->
@@ -143,9 +143,30 @@
             {{ $t('Rows per page:') }}
           </div>
           <q-select dense flat size="xs" v-model="pagination.rowsPerPage" :options="rowsPerPageOptions" class="q-mx-md">
+            <template #option="props">
+              <q-item @click="props.toggleOption(props.opt)" clickable v-ripple dense :class="{
+                'bg-primary': props.selected,
+                'text-white': props.selected,
+              }">
+                <q-item-section>{{ props.opt || $t('All') }}</q-item-section>
+                <q-item-section side style="color: currentColor;">
+                  <q-icon v-if="props.selected" name="svguse:#pl-check"></q-icon>
+                </q-item-section>
+              </q-item>
+            </template>
+            <template #selected-item="{opt}">
+              <span>{{ opt||$t('All') }}</span>
+            </template>
           </q-select>
           <q-pagination v-model="pagination.page" :max="pagesNumber" :max-pages="maxPages" direction-links dense size="sm"
             flat color="grey" active-color="primary" />
+        </template>
+
+        <template v-slot:no-date="{icon, message}">
+          <div>
+            <q-icon :name="icon"></q-icon>
+            <span>{{ message }}</span>sss
+          </div>
         </template>
       </q-table>
 
@@ -169,7 +190,7 @@
     <q-popup-proxy v-model="cellEditorVisible" :target="`.cell-${activeCell?.row._id}-${activeCell?.col._id}`"
       ref="$cellEditor" persistent no-parent-event @hide="activeCell=null" :offset="[8,1]" class="p-bg cell-editor">
 
-      <div class="q-pa-md p-bg1 info" style="min-width: 320px;">
+      <div class="q-px-md q-pt-md p-bg1 info" style="min-width: 320px;">
         <q-field :label="$t(`localeNames.${project.language}`) + ' - (' + $t('primary-language') + ')'" stack-label
           readonly borderless>
           <template v-slot:prepend>
@@ -184,9 +205,8 @@
           </template>
         </q-field>
 
-        <q-separator></q-separator>
 
-        <q-field :label="$t(`localeNames.${activeCell?.col._key}`)" stack-label readonly borderless>
+        <!-- <q-field :label="$t(`localeNames.${activeCell?.col._key}`)" stack-label readonly borderless>
           <template v-slot:prepend>
             <FlagIcon :code="activeCell?.col._key" square width="24px" height="24px" />
           </template>
@@ -197,18 +217,42 @@
                 @click="activeCell?.value && speak(activeCell?.value, activeCell?.col._key)" />
             </div>
           </template>
-        </q-field>
+        </q-field> -->
       </div>
+      <q-separator></q-separator>
+      <div class="q-pa-xs p-bg1 xinput" style="min-width: 400px">
+        <q-toolbar style="min-height: unset;">
+          <q-btn flat round dense size="md" icon="svguse:#pl-undo" :disable="!canUndo1" @click="undo1()">
+            <q-tooltip anchor="top middle" self="bottom middle">{{$t('Undo')}}</q-tooltip>
+          </q-btn>
+          <q-btn flat round dense size="md" icon="svguse:#pl-redo" :disable="!canRedo1" @click="redo1()">
+            <q-tooltip anchor="top middle" self="bottom middle">{{$t('Redo')}}</q-tooltip>
+          </q-btn>
 
-      <div class="q-pa-md p-bg input">
+          <q-separator spaced vertical></q-separator>
+
+          <template v-for="provider in providers" :key="provider.key">
+            <q-btn dense v-if="provider.enable" flat round size="sm" :icon="`svguse:#pl-${provider.key}`"
+              :loading="!!translateToInputLoading"
+              @click="translateToInput(texts?.[project.language]?.[activeCell?.row?._key], activeCell?.col._key, project.language, provider.key)">
+              <q-tooltip anchor="top middle" self="bottom middle">
+                {{ upperFirst($t(provider.key)) }}
+              </q-tooltip>
+            </q-btn>
+          </template>
+          <q-space />
+          <q-btn flat round dense size="sm" color="primary" icon="svguse:#pl-speak"
+            @click="activeCell?.value && speak(activeCell?.value, activeCell?.col._key)" />
+        </q-toolbar>
         <q-input v-if="activeCell" :type="activeCell?.value?.length > 15 ? 'textarea' : 'text'"
-          :label="$t('Please enter new text')" :rows="Math.ceil(activeCell?.value?.length / 15)"
-          :model-value="activeCell?.tmp ?? activeCell?.value" label-color="primary" clearable stack-label autofocus
-          outlined bottom-slots @update:model-value="(v)=>activeCell!.tmp = v as string"
+          :label="$t('Please enter new text')" :rows="Math.ceil(activeCell?.value?.length / 15)" bg-color="white"
+          :model-value="activeCell?.value" label-color="primary" clearable stack-label autofocus outlined bottom-slots
+          @update:model-value="(v)=>{activeCell!.value = (v as string); commit1();}"
           @keyup.ctrl.enter="saveCellValue(activeCell?.col.name, activeCell?.row._key);"
           @keyup.meta.enter="saveCellValue(activeCell?.col.name, activeCell?.row._key);">
           <template v-slot:prepend>
-            <q-icon name="svguse:#pl-edit" color="primary"></q-icon>
+            <!-- <q-icon name="svguse:#pl-edit" color="primary"></q-icon> -->
+            <FlagIcon :code="activeCell?.col._key" square width="24px" height="24px" />
           </template>
         </q-input>
 
@@ -218,16 +262,6 @@
             <q-btn dense rounded color="primary" size="sm" @click="useEngineTranslation">{{ $t('Use')}}</q-btn>
           </div>
 
-          <template v-for="provider in providers" :key="provider.key">
-            <q-btn dense v-if="provider.enable" flat round size="sm" :icon="`svguse:#pl-${provider.key}`"
-              :loading="!!translateToInputLoading"
-              @click="translateToInput(texts?.[project.language]?.[activeCell?.row?._key], activeCell?.col._key, project.language, provider.key)">
-              <q-tooltip>
-                {{ upperFirst($t(provider.key)) }}
-              </q-tooltip>
-            </q-btn>
-
-          </template>
         </div>
       </div>
 
@@ -246,7 +280,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { QMenu, QPopupProxy, QTable, QTableColumn, debounce } from 'quasar';
@@ -268,6 +302,7 @@ import useColumnToggle from '../../compasibles/useColumnToggle'
 import useSpeak from '../../compasibles/useSpeak'
 import useHistory from '../../compasibles/useHistory'
 import useColumnTools from '../../compasibles/useColumnTools';
+import { useManualRefHistory } from '@vueuse/core';
 
 // const $q = useQuasar()
 const store = useProjectStore()
@@ -291,7 +326,7 @@ const selection = ref<'multiple' | 'single' | 'none'>('multiple')
 const selected = ref<(typeof rows['value'])>([])
 const selectedAll = computed({
   get() {
-    let total = Math.min(pagination.value.rowsPerPage, $table.value?.computedRows?.length||Infinity)
+    let total = Math.min(pagination.value.rowsPerPage||1, $table.value?.computedRows?.length||Infinity)
     return selected.value.length === total
       ? true
       : (selected.value.length===0 ? false: null)
@@ -312,6 +347,12 @@ const activeCell = ref<{
   row: Record<string, any>;
   col: Record<string, any>;
 } | null>(null)
+const activeValue = computed({
+  get() { return activeCell.value?.value || '' },
+  set(val){
+    activeCell.value && (activeCell.value.value = val || '')
+  }
+})
 const cellEditorVisible = ref(false)
 const $table = ref<QTable|null>(null)
 const project = computed((): Project=> {
@@ -326,7 +367,8 @@ const texts = computed({
     Object.assign(localeStore.state.projects[project.value.id], newTexts)
   }
 })
-const {commit, undo, redo, canUndo, canRedo} = useHistory(texts)
+const {init: initHistory, source, commit, undo, redo, canUndo, canRedo} = useHistory(texts)
+const {clear: clear1, commit: commit1, undo: undo1, redo: redo1, canUndo: canUndo1, canRedo: canRedo1} = useHistory(activeValue, false)
 const rows = computed(()=>localeStore.allTextOfProject)
 const columns = computed((): QTableColumn[] => {
   const { language, enabledLanguages=[] } = project.value||{};
@@ -367,7 +409,7 @@ const columns = computed((): QTableColumn[] => {
     label: '',
 
     align: 'right',
-    width: '100px',
+    width: '60px',
     sortable: false
   } as any)
 
@@ -382,16 +424,12 @@ const pagination = ref({
   rowsPerPage: 50
 })
 const rowsPerPageOptions = ref([
-  5,10,20,30,40,50,100
+  5,10,20,30,40,50,100,0
 ])
 const maxPages = ref(8)
 const pagesNumber = computed(() => {
-  return Math.ceil(($table.value?.computedRowsNumber || rows.value.length) / pagination.value.rowsPerPage)
+  return !pagination.value.rowsPerPage ? 1 : Math.ceil(($table.value?.computedRowsNumber || rows.value.length) / pagination.value.rowsPerPage)
 })
-function onPaginationChange(v: Partial<typeof pagination.value>) {
-  Object.assign(pagination.value, v)
-}
-
 async function translate(text: string, target: string, source:string = project.value.language, provider?: PROVIDERS) {
   return await (
     provider ?
@@ -409,7 +447,7 @@ async function translateToInput(text: string, target: string, source:string, pro
 
 function useEngineTranslation() {
   if (engineTranslation.value && activeCell.value) {
-    activeCell.value.tmp = engineTranslation.value
+    activeCell.value.value = engineTranslation.value
   }
 }
 
@@ -421,11 +459,13 @@ function onCellClick({row, col}: Record<string, any>) {
   if (col._key === project.value.language) {
     return
   }
+
   activeTh.value = col.name
   activeCell.value = {row, col, value: row[col._key]}
   cellEditorVisible.value = true
   engineTranslation.value = ''
   nextTick(()=>{
+    activeCell.value = {row, col, value: row[col._key]}
     const menu = ($cellEditor.value?.currentComponent?.ref as QMenu)
     menu?.updatePosition()
 
@@ -451,7 +491,7 @@ function sort(rows: readonly any[], sortBy:string, descending: boolean) {
 }
 
 function saveCellValue(lang: string, key: string) {
-  texts.value[lang][key] = activeCell.value?.tmp ?? activeCell.value?.value ?? '';
+  texts.value[lang][key] = activeCell.value?.value ?? '';
   cellEditorVisible.value = false
   nextTick(()=>{
     commit()
@@ -465,6 +505,20 @@ const onTableScroll = debounce(function() {
 }, 400)
 
 onMounted(async () => {
+  const cancel = watch(()=>texts.value, (val, old)=>{
+    console.log(val, Object.keys(val))
+    if (Object.keys(val).length>1) {
+      source.value = val
+      initHistory()
+      cancel()
+    }
+  }, {deep: true})
+  watch (
+    [()=>activeCell.value?.row?._id, ()=>activeCell.value?.col?._id],
+    ()=>{
+        clear1()
+    }
+  );
   watch(
     ()=>route.params.id as string,
     async (id, old)=>{
@@ -749,6 +803,18 @@ onBeforeUnmount(()=>{
   .q-table__middle {
     height: calc(100vh - 172px);
     position: relative;
+
+    &:has(+ .q-table__bottom--nodata) {
+      height: unset !important;
+    }
+  }
+
+  .q-table__bottom {
+    &--nodata {
+      justify-content: center;
+      padding: 4em 1em;
+      color: $warning;
+    }
   }
 
   .q-table--dense {

@@ -306,5 +306,6 @@
     "Remove {name}": "Hiq {name} ",
     "Remove language \"{lang}\" from project {name}": "Hiq gjuhën \"{lang} \" nga projekti {name} ",
     "And delete the language file also": "Dhe fshini skedarin e gjuhës gjithashtu",
-    "Languages": "Gjuhët"
+    "Languages": "Gjuhët",
+    "All": "Të gjitha"
 }

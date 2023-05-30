@@ -48,7 +48,7 @@
           :disable="finished || !isStep1Done" :error="step > 2 && !isStep2Done" :done="step >= 2 && isStep2Done">
 
           <LanguageSelector v-model="form.language" :languages="allLocaleCodes" :label="$t('primary-language')" square
-            emit-value map-options bottom-slots icon="flag">
+            emit-value map-options bottom-slots use-input icon="flag">
             <!-- <template v-slot:prepend>
               <q-icon name="flag" size="1.4em" color="primary" />
             </template> -->
@@ -98,7 +98,7 @@
           <section>
             <LanguageSelector v-model="availableLanguages" multiple :languages="allLanguageFilteredOptions2" stack-label
               label-color="primary" :label="$t('Adding language')" square emit-value map-options status-component="toggle"
-              hide-dropdown-icon :chip="{color: 'primary', outline:true}" icon="svguse:#pl-new">
+              hide-dropdown-icon use-input :chip="{color: 'primary', outline:true}" icon="svguse:#pl-new">
               <!-- <template v-slot:prepend>
                 <q-icon name="svguse:#pl-new" size="1em" color="primary" />
               </template> -->

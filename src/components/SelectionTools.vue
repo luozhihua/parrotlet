@@ -14,10 +14,14 @@ import { PropType } from 'vue';
 import { useProjectStore } from '../stores/useProjectStore';
 import { useLocaleStore } from '../stores/useLocaleStore';
 import pLimit from 'p-limit';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 const limit = pLimit(4)
 const $proj = useProjectStore()
 const $locale = useLocaleStore()
+const $q = useQuasar()
+const { t: $t } = useI18n()
 const props = defineProps({
   selected: {type: Array as PropType<Record<string, string>[]>, default:()=>[]}
 })
@@ -39,14 +43,14 @@ async function translate() {
 }
 
 async function remove() {
-  //
-  await Promise.all(
-    props.selected.map(
-      (row: any)=>limit(async ()=>{
-        await $locale.removeText(row._key)
-      })
+  $q.dialog({
+    title: $t('Confirm'),
+    message: $t('Are you sure you want to remove selected texts from all languages?')
+  }).onOk(()=>{
+    props.selected.forEach(
+      (row: any)=> $locale.removeText(row._key)
     )
-  )
-  emit('history')
+    emit('history')
+  })
 }
 </script>

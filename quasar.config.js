@@ -307,6 +307,14 @@ module.exports = configure(function (ctx) {
 
         appId: 'com.parrotlet.app',
         icon: '/Users/colin/Works/Projects/parrotlet2/public/icons',
+        publish: [
+          {
+            provider: 'github',
+            publishAutoUpdate: true,
+            private: true,
+            token: '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',
+          },
+        ],
         mac: {
           category: 'public.app-category.developer-tools',
           icon: '../public/icons/icon.icns',

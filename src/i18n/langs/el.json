@@ -306,5 +306,6 @@
     "Remove {name}": "Αφαίρεση {name}",
     "Remove language \"{lang}\" from project {name}": "Αφαίρεση γλώσσας \"{lang}\" από το έργο {name}",
     "And delete the language file also": "Και διαγράψτε το αρχείο γλώσσας επίσης.",
-    "Languages": "Γλώσσες"
+    "Languages": "Γλώσσες",
+    "All": "Όλα"
 }

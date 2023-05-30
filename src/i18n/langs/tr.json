@@ -306,5 +306,6 @@
     "Remove {name}": "{name} öğesini kaldır ",
     "Remove language \"{lang}\" from project {name}": "\"{lang} \" dilini projeden kaldırma {name} ",
     "And delete the language file also": "Ve dil dosyasını da silin",
-    "Languages": "Diller"
+    "Languages": "Diller",
+    "All": "tüm"
 }

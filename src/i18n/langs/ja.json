@@ -306,5 +306,6 @@
     "Remove {name}": "{name}を削除",
     "Remove language \"{lang}\" from project {name}": "プロジェクト {lang} から言語 \"{name} \" を削除",
     "And delete the language file also": "また、言語ファイルも削除します",
-    "Languages": "言語"
+    "Languages": "言語",
+    "All": ""
 }

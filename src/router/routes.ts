@@ -19,28 +19,28 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'project-translator',
         path: '/project/translator/:id',
-        component: () => import('pages/project/ProjectLocales.vue'),
+        component: () => import('pages/project/TextEditor.vue'),
       },
       {
         name: 'project-translator-lang',
         path: '/project/translator/:id/:lang',
-        component: () => import('pages/project/ProjectLocalesTranslator.vue'),
+        component: () => import('pages/project/TextOfLanguage.vue'),
         props: true,
       },
       {
         name: 'project-details',
         path: '/project/details/:id',
-        component: () => import('pages/project/ProjectDetails.vue'),
+        component: () => import('pages/project/LanguageList.vue'),
       },
       {
         name: 'project-creator',
         path: '/project/creator',
-        component: () => import('pages/project/ProjectEditor.vue'),
+        component: () => import('pages/project/ProjectProps.vue'),
       },
       {
         name: 'project-editor',
         path: '/project/editor/:id',
-        component: () => import('pages/project/ProjectEditor.vue'),
+        component: () => import('pages/project/ProjectProps.vue'),
       },
       {
         name: 'settings',

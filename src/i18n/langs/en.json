@@ -306,5 +306,6 @@
     "Remove {name}": "Remove {name} ",
     "Remove language \"{lang}\" from project {name}": "Remove language \"{lang} \" from project {name} ",
     "And delete the language file also": "And delete the language file also",
-    "Languages": "Languages"
+    "Languages": "Languages",
+    "All": "All"
 }

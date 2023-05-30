@@ -307,5 +307,6 @@
     "Remove {name}": "删除 {name}",
     "Remove language \"{lang}\" from project {name}": "从项目 {lang} 中删除语言“{name} ”",
     "And delete the language file also": "并删除语言文件",
-    "Languages": "语言"
+    "Languages": "语言",
+    "All": "全部"
 }
