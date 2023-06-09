@@ -8,6 +8,8 @@ import {
   session,
   shell,
 } from 'electron';
+// import { checkForUpdates } from "./upgrade"
+import { autoUpdater } from 'electron-updater';
 import path from 'path';
 import os from 'os';
 import { initialize, enable } from '@electron/remote/main';
@@ -45,6 +47,7 @@ function onAppReady() {
   // Resolve proxy
   resolveProxy();
   createWindow();
+  autoUpdater.checkForUpdatesAndNotify();
 }
 
 async function createWindow(

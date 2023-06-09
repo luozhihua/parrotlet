@@ -295,11 +295,12 @@ module.exports = configure(function (ctx) {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
         // OS X / Mac App Store
         appBundleId: 'com.parrotlet.app',
-        appCategoryType: 'Tool',
+        appCategoryType: 'public.app-category.developer-tools',
         // osxSign: '',
         protocol: 'parrotlet://projects',
         // Windows only
         // win32metadata: { ... }
+        platform: ['darwin', 'win32', 'linux'],
       },
 
       builder: {
@@ -307,6 +308,7 @@ module.exports = configure(function (ctx) {
 
         appId: 'com.parrotlet.app',
         icon: '/Users/colin/Works/Projects/parrotlet2/public/icons',
+
         publish: [
           {
             provider: 'github',

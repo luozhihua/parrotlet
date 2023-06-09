@@ -65,7 +65,7 @@
     <div class="app-page-main">
       <q-table ref="$table" :rows="rows" row-key="_id" :columns="columns" :dense="dense" separator="cell"
         column-sort-order="ad" :sort-method="sort" binary-state-sort v-model:pagination="pagination"
-        :visible-columns="visibleColumns" virtual-scroll :virtual-scroll-sticky-size-start="28"
+        :visible-columns="visibleColumns" :virtual-scroll="true" :virtual-scroll-sticky-size-start="28"
         :virtual-scroll-item-size="28" :loading="loading" :filter="mergedFilter" :filter-method="filterMethod"
         :selection="selection" v-model:selected="selected" :rowsPerPageOptions="rowsPerPageOptions" :class="{
           [`selection-${selection}`]: true, 'no-shadow': true
@@ -118,8 +118,8 @@
               [`cell-${row._id}`]: true,
               [`cell-${col._key}`]: true,
               'text-right': col._key === 'editor',
-              'active-cell': activeCell?.row._id===row._id && activeCell?.col._id==col._id
-            }" @mousedown="col._key !== 'editor' && onCellClick({row, col, value})">
+              'active-cell': activeRow?._id===row._id && activeCol?._id==col._id
+            }" @mousedown.left="col._key !== 'editor' && onCellClick({row, col, value})">
             <span v-if="col._key !== 'editor'" v-html="value"></span>
             <RowTools v-else :project-id="(route.params.id as string)" :text-key="row._key" @history="commit()" />
           </q-td>
@@ -169,7 +169,6 @@
           </div>
         </template>
       </q-table>
-
     </div>
 
     <q-dialog :value="translateProcess > 0" position="top">
@@ -187,94 +186,10 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-popup-proxy v-model="cellEditorVisible" :target="`.cell-${activeCell?.row._id}-${activeCell?.col._id}`"
-      ref="$cellEditor" persistent no-parent-event @hide="activeCell=null" :offset="[8,1]" class="p-bg cell-editor">
 
-      <div class="q-px-md q-pt-md p-bg1 info" style="min-width: 320px;">
-        <q-field :label="$t(`localeNames.${project.language}`) + ' - (' + $t('primary-language') + ')'" stack-label
-          readonly borderless>
-          <template v-slot:prepend>
-            <FlagIcon :code="project.language" square width="24px" height="24px" />
-          </template>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline" tabindex="0">
-              {{texts?.[project.language]?.[activeCell?.row._key]}}
-              <q-btn flat round dense size="sm" color="primary" icon="svguse:#pl-speak"
-                @click="speak(texts?.[project.language]?.[activeCell?.row._key], project.language)" />
-            </div>
-          </template>
-        </q-field>
-
-
-        <!-- <q-field :label="$t(`localeNames.${activeCell?.col._key}`)" stack-label readonly borderless>
-          <template v-slot:prepend>
-            <FlagIcon :code="activeCell?.col._key" square width="24px" height="24px" />
-          </template>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline" tabindex="0">
-              {{activeCell?.value}}
-              <q-btn flat round dense size="sm" color="primary" icon="svguse:#pl-speak"
-                @click="activeCell?.value && speak(activeCell?.value, activeCell?.col._key)" />
-            </div>
-          </template>
-        </q-field> -->
-      </div>
-      <q-separator></q-separator>
-      <div class="q-pa-xs p-bg1 xinput" style="min-width: 400px">
-        <q-toolbar style="min-height: unset;">
-          <q-btn flat round dense size="md" icon="svguse:#pl-undo" :disable="!canUndo1" @click="undo1()">
-            <q-tooltip anchor="top middle" self="bottom middle">{{$t('Undo')}}</q-tooltip>
-          </q-btn>
-          <q-btn flat round dense size="md" icon="svguse:#pl-redo" :disable="!canRedo1" @click="redo1()">
-            <q-tooltip anchor="top middle" self="bottom middle">{{$t('Redo')}}</q-tooltip>
-          </q-btn>
-
-          <q-separator spaced vertical></q-separator>
-
-          <template v-for="provider in providers" :key="provider.key">
-            <q-btn dense v-if="provider.enable" flat round size="sm" :icon="`svguse:#pl-${provider.key}`"
-              :loading="!!translateToInputLoading"
-              @click="translateToInput(texts?.[project.language]?.[activeCell?.row?._key], activeCell?.col._key, project.language, provider.key)">
-              <q-tooltip anchor="top middle" self="bottom middle">
-                {{ upperFirst($t(provider.key)) }}
-              </q-tooltip>
-            </q-btn>
-          </template>
-          <q-space />
-          <q-btn flat round dense size="sm" color="primary" icon="svguse:#pl-speak"
-            @click="activeCell?.value && speak(activeCell?.value, activeCell?.col._key)" />
-        </q-toolbar>
-        <q-input v-if="activeCell" :type="activeCell?.value?.length > 15 ? 'textarea' : 'text'"
-          :label="$t('Please enter new text')" :rows="Math.ceil(activeCell?.value?.length / 15)" bg-color="white"
-          :model-value="activeCell?.value" label-color="primary" clearable stack-label autofocus outlined bottom-slots
-          @update:model-value="(v)=>{activeCell!.value = (v as string); commit1();}"
-          @keyup.ctrl.enter="saveCellValue(activeCell?.col.name, activeCell?.row._key);"
-          @keyup.meta.enter="saveCellValue(activeCell?.col.name, activeCell?.row._key);">
-          <template v-slot:prepend>
-            <!-- <q-icon name="svguse:#pl-edit" color="primary"></q-icon> -->
-            <FlagIcon :code="activeCell?.col._key" square width="24px" height="24px" />
-          </template>
-        </q-input>
-
-        <div>
-          <div v-if="engineTranslation">
-            {{ engineTranslation }}
-            <q-btn dense rounded color="primary" size="sm" @click="useEngineTranslation">{{ $t('Use')}}</q-btn>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="flex q-pa-md justify-end p-bg2 sticky-bottom">
-        <q-btn color="primary" @click="saveCellValue(activeCell?.col.name, activeCell?.row._key);"
-          icon="svguse:#pl-check">
-          <span class="q-mr-sm">{{$t('confirm')}}</span>
-          <span class="text-lowercase text-weight-light text-grey-5 text-caption">(Ctrl + Enter)</span>
-        </q-btn>
-        <q-space></q-space>
-        <q-btn :label="$t('cancel')" flat v-close-popup @click="$cellEditor?.hide()" />
-      </div>
-    </q-popup-proxy>
+    <TranslateDialog ref="$cellEditor" v-if="activeRow && activeCol" :model-value="activeRow[activeCol._key]"
+      v-model:visible="cellEditorVisible" @update:model-value="saveCellValue" :row="activeRow" :col="activeCol"
+      :base-text="project.language ? activeRow?.[project.language] : ''" :base-lang="project.language" />
     <ColumnTools v-model="columnToolsVisible" :lang="activeTh" @history="commit()" />
   </q-page>
 </template>
@@ -286,8 +201,7 @@ import { useRoute } from 'vue-router';
 import { QMenu, QPopupProxy, QTable, QTableColumn, debounce } from 'quasar';
 import { Project, useProjectStore } from '../../stores/useProjectStore';
 import { useLocaleStore } from '../../stores/useLocaleStore';
-import { electron } from '../../util/electron';
-import { kebabCase, upperFirst } from 'lodash-es'
+import { kebabCase } from 'lodash-es'
 import TranslateProcess from 'src/components/TranslateProcess.vue';
 import FlagIcon from '../../components/FlagIcon.vue'
 import RowTools from '../../components/RowTools.vue'
@@ -295,14 +209,11 @@ import SelectionTools from '../../components/SelectionTools.vue'
 import ColumnResize from '../../components/ColumnResize.vue'
 import AddText from '../../components/AddText.vue'
 import AddLanguage from '../../components/AddLanguage.vue'
-import useProvider from '../../compasibles/useProvider';
-import { PROVIDERS } from '../../../src-electron/translator/constants';
 import useQTableFilter from '../../compasibles/useTableFilter'
 import useColumnToggle from '../../compasibles/useColumnToggle'
-import useSpeak from '../../compasibles/useSpeak'
 import useHistory from '../../compasibles/useHistory'
-import useColumnTools from '../../compasibles/useColumnTools';
-import { useManualRefHistory } from '@vueuse/core';
+import useColumnTools from '../../compasibles/useColumnTools'
+import TranslateDialog from '../../components/TranslateDialog.vue'
 
 // const $q = useQuasar()
 const store = useProjectStore()
@@ -310,17 +221,14 @@ const localeStore = useLocaleStore()
 // const router = useRouter()
 const route = useRoute()
 const {t:$t} = useI18n()
-const { providers } = useProvider()
-const { speak } = useSpeak()
 const { QTableFilter, QTableKeyword, filter, filterVisible, filterMethod, keyword, caseSensitive } = useQTableFilter()
+const $cellEditor = ref<typeof TranslateDialog | null>(null)
 
 localeStore.loadProjectLocale(route.params.id as string)
 const mergedFilter = computed(()=>{
   return {filter: filter.value, keyword: keyword.value}
 })
-const $cellEditor = ref<QPopupProxy|null>(null)
 const dense = ref(true)
-const engineTranslation = ref('')
 const loading = ref(true)
 const selection = ref<'multiple' | 'single' | 'none'>('multiple')
 const selected = ref<(typeof rows['value'])>([])
@@ -341,18 +249,8 @@ const selectedAll = computed({
 })
 const translateProcess = ref(0)
 const activeTh = ref('')
-const activeCell = ref<{
-  value: string;
-  tmp?: string | null;
-  row: Record<string, any>;
-  col: Record<string, any>;
-} | null>(null)
-const activeValue = computed({
-  get() { return activeCell.value?.value || '' },
-  set(val){
-    activeCell.value && (activeCell.value.value = val || '')
-  }
-})
+const activeRow = ref<Record<string, any> | null>(null)
+const activeCol = ref<Record<string, any> | null>(null)
 const cellEditorVisible = ref(false)
 const $table = ref<QTable|null>(null)
 const project = computed((): Project=> {
@@ -368,7 +266,6 @@ const texts = computed({
   }
 })
 const {init: initHistory, source, commit, undo, redo, canUndo, canRedo} = useHistory(texts)
-const {clear: clear1, commit: commit1, undo: undo1, redo: redo1, canUndo: canUndo1, canRedo: canRedo1} = useHistory(activeValue, false)
 const rows = computed(()=>localeStore.allTextOfProject)
 const columns = computed((): QTableColumn[] => {
   const { language, enabledLanguages=[] } = project.value||{};
@@ -430,48 +327,31 @@ const maxPages = ref(8)
 const pagesNumber = computed(() => {
   return !pagination.value.rowsPerPage ? 1 : Math.ceil(($table.value?.computedRowsNumber || rows.value.length) / pagination.value.rowsPerPage)
 })
-async function translate(text: string, target: string, source:string = project.value.language, provider?: PROVIDERS) {
-  return await (
-    provider ?
-      electron.translateByEngine(provider, text, target, source) :
-      electron.translate(text, target, source)
-  )
-}
-
-let translateToInputLoading: PROVIDERS | undefined
-async function translateToInput(text: string, target: string, source:string, provider?: PROVIDERS) {
-  translateToInputLoading = provider
-  engineTranslation.value = await translate(text, target, source, provider)
-  translateToInputLoading = undefined
-}
-
-function useEngineTranslation() {
-  if (engineTranslation.value && activeCell.value) {
-    activeCell.value.value = engineTranslation.value
-  }
-}
 
 function onThClick(col: any) {
   activeTh.value = col.name
 }
 
 function onCellClick({row, col}: Record<string, any>) {
-  if (col._key === project.value.language) {
-    return
+  if (col._key !== project.value.language) {
+    activeTh.value = col.name
+    activeRow.value = row
+    activeCol.value = col
+    cellEditorVisible.value = true
   }
+}
 
-  activeTh.value = col.name
-  activeCell.value = {row, col, value: row[col._key]}
-  cellEditorVisible.value = true
-  engineTranslation.value = ''
+function saveCellValue(value: string) {
+  const lang = activeCol.value?._key
+  const key = activeRow.value?._key
+  const old = texts.value[lang][key]
+  texts.value[lang][key] = value ?? '';
+  cellEditorVisible.value = false
   nextTick(()=>{
-    activeCell.value = {row, col, value: row[col._key]}
-    const menu = ($cellEditor.value?.currentComponent?.ref as QMenu)
-    menu?.updatePosition()
-
-    setTimeout(()=>{
-      menu?.focus()
-    },200)
+    if (old !== value) {
+      commit()
+    }
+    activeRow.value = activeCol.value = null
   })
 }
 
@@ -490,15 +370,6 @@ function sort(rows: readonly any[], sortBy:string, descending: boolean) {
   return data
 }
 
-function saveCellValue(lang: string, key: string) {
-  texts.value[lang][key] = activeCell.value?.value ?? '';
-  cellEditorVisible.value = false
-  nextTick(()=>{
-    commit()
-    activeCell.value = null
-  })
-}
-
 const onTableScroll = debounce(function() {
   const menu = ($cellEditor.value?.currentComponent?.ref as QMenu)
   menu?.updatePosition()
@@ -513,12 +384,7 @@ onMounted(async () => {
       cancel()
     }
   }, {deep: true})
-  watch (
-    [()=>activeCell.value?.row?._id, ()=>activeCell.value?.col?._id],
-    ()=>{
-        clear1()
-    }
-  );
+
   watch(
     ()=>route.params.id as string,
     async (id, old)=>{
@@ -538,18 +404,6 @@ onMounted(async () => {
     if (rowsPerPage!==_rowsPerPage) {
       pagination.value.page = 1
     }
-
-    // if (page!==_page || (rowsPerPage!==_rowsPerPage)){
-    //   nextTick(()=>{
-    //     $table.value?.setPagination(pagination, true)
-    //   })
-    // }
-  })
-
-  watch(()=> !!activeCell.value, (visible)=>{
-    nextTick(()=>{
-      if (visible) cellEditorVisible.value = true
-    })
   })
 
   watch(

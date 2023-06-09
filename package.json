@@ -1,6 +1,6 @@
 {
   "name": "parrotlet2",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A GUI app for translates vue-i18n locale texts.",
   "productName": "Parrotlet",
   "author": "Colin <mail@luozhihua.com>",
@@ -11,7 +11,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev -m electron --debug  -- --remote-debugging-port=9222",
     "build": "quasar build",
-    "release": "quasar build -m electron -T mac -T win --publish always"
+    "release": "quasar build -m electron --publish always"
   },
   "dependencies": {
     "@alicloud/alimt20181012": "^1.1.0",
@@ -23,7 +23,9 @@
     "axios": "^1.4.0",
     "case": "^1.6.3",
     "deepl-node": "^1.9.0",
+    "electron-log": "^4.4.8",
     "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
     "flat": "^5.0.2",
     "lodash-es": "^4.17.21",
     "lrz": "^4.9.41",
