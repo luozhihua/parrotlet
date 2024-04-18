@@ -47,6 +47,14 @@ function onAppReady() {
   // Resolve proxy
   resolveProxy();
   createWindow();
+  autoUpdater.setFeedURL({
+    provider: 'github',
+    owner: 'luozhihua',
+    repo: 'parrotlet',
+    publishAutoUpdate: true,
+    releaseType: 'release',
+    private: false,
+  });
   autoUpdater.checkForUpdatesAndNotify();
 }
 

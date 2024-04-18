@@ -307,14 +307,16 @@ module.exports = configure(function (ctx) {
         // https://www.electron.build/configuration/configuration
 
         appId: 'com.parrotlet.app',
-        icon: '/Users/colin/Works/Projects/parrotlet2/public/icons',
+        icon: '/Users/colin/Works/Projects/parrotlet2/public/icons/icon.ico',
 
         publish: [
           {
             provider: 'github',
+            owner: 'luozhihua',
+            repo: 'parrotlet',
             publishAutoUpdate: true,
-            private: true,
-            token: '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',
+            releaseType: 'release',
+            private: false,
           },
         ],
         mac: {

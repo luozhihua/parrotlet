@@ -82,6 +82,8 @@
         </div>
       </q-toolbar>
     </q-footer>
+
+    <!-- <AutoUpdate /> -->
   </q-layout>
 </template>
 
@@ -90,6 +92,7 @@
 import {ref, watch} from 'vue'
 import {useRouter} from 'vue-router'
 import AllSettings from '../components/settings/AllSettings.vue'
+// import AutoUpdate from '../components/AutoUpdate.vue'
 import StatusProxy from './status/StatusProxy.vue'
 import StatusEngine from './status/StatusEngine.vue'
 import StatusDark from './status/StatusDark.vue'

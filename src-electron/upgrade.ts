@@ -22,7 +22,7 @@ log.info('App starting...');
 //
 // THIS SECTION IS NOT REQUIRED
 //-------------------------------------------------------------------
-const template = [];
+const template: any[] = [];
 if (process.platform === 'darwin') {
   // OS X
   const name = app.getName();
@@ -53,25 +53,11 @@ if (process.platform === 'darwin') {
 // for the app to show a window than to have to click "About" to see
 // that updates are working.
 //-------------------------------------------------------------------
-let win;
+let win: BrowserWindow;
 
-function sendStatusToWindow(text) {
+function sendStatusToWindow(text: string) {
   log.info(text);
   win.webContents.send('message', text);
-}
-function createDefaultWindow() {
-  win = new BrowserWindow({
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-  win.webContents.openDevTools();
-  win.on('closed', () => {
-    win = null;
-  });
-  win.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
-  return win;
 }
 autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
@@ -99,16 +85,6 @@ autoUpdater.on('download-progress', (progressObj) => {
 });
 autoUpdater.on('update-downloaded', (info) => {
   sendStatusToWindow('Update downloaded');
-});
-app.on('ready', function () {
-  // Create the Menu
-  const menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
-
-  createDefaultWindow();
-});
-app.on('window-all-closed', () => {
-  app.quit();
 });
 
 //
